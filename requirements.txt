@@ -1,0 +1,4 @@
+virtualenv==20.23.0
+pyyaml
+croniter
+pytz
