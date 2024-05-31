@@ -7,6 +7,10 @@ from .util.LogHandler import LogHandler
 def main():
     logging.basicConfig(level=LogHandler.LEVEL, format=LogHandler.FORMAT)
 
+    verifyArgumentExists()
+    ProcessScheduler(sys.argv[1]).loop()
+
+def verifyArgumentExists():
     if len(sys.argv) < 2:
         logging.error("Missing CLI argument: Configuration File Path")
         logging.error("")
@@ -15,10 +19,5 @@ def main():
         logging.error("")
         sys.exit(1)
     
-    configPath = sys.argv[1]
-    logging.info(f"Using configuration file: \"{configPath}\"")
-
-    ProcessScheduler(configPath).loop()
-
 if __name__ == '__main__':
     main()

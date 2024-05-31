@@ -1,0 +1,9 @@
+scheduler:
+  loop:
+    restartSeconds: 0
+    runOnce: True
+processes:
+  - id: test-job
+    cron: "* * * * *"
+    command: "python hello_world.py"
+    runAtStartup: true

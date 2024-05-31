@@ -8,13 +8,13 @@ class ConfigHandler:
     def __init__(self):
         self.fileHandler = FileHandler()
 
-    def read(self, fileNameOrPath):
-        logging.debug(f"fileNameOrPath={fileNameOrPath}")
+    def read(self, filePath):
+        logging.debug(f"filePath={filePath}")
 
-        yamlConfig = self.fileHandler.readConfig(fileNameOrPath) 
+        yamlConfig = self.fileHandler.readConfig(filePath) 
         logging.debug(f"YAML config: {yamlConfig}")
 
         config = Config(yamlConfig)
-        logging.debug("Config created: {config}")
+        logging.debug(f"Config created: {config}")
 
         return config

@@ -1,7 +1,5 @@
-import json
 import sys
 import time
-import os
 import pytz
 import logging
 from subprocess import Popen, PIPE, STDOUT
@@ -16,7 +14,7 @@ from ..domain.State import State
 class ProcessScheduler:
 
     def __init__(self, configPath):
-        logging.debug(f"configPath={configPath}")
+        logging.info(f"Using configuration file: \"{configPath}\"")
 
         self.configPath = configPath
         self.startupDatetime = datetime.now(pytz.timezone('Europe/London'))
@@ -31,14 +29,18 @@ class ProcessScheduler:
 
             config = self.configHandler.read(self.configPath)
             self.runAll(config)
-            self.wait(config.loopRefreshSeconds)
+            self.sleep(config.scheduler.loop.restartSeconds)
             
+            if config.scheduler.loop.runOnce:
+                self.waitAll()
+                break
+
     def runAll(self, config):
         logging.debug(f"config={config}")
 
-        with ThreadPoolExecutor (max_workers=config.maxWorkers) as executor:
-            for processConfig in config.processesConfig.processList:
-                slog = self.logHandler.createSchedulerLogger (processConfig, config.schedulerLogDir) 
+        with ThreadPoolExecutor(max_workers=config.scheduler.maxWorkers) as executor:
+            for processConfig in iter(config.processes):
+                slog = self.logHandler.createSchedulerLogger(processConfig, config.logs)
                 slog.info(f"[{processConfig.id}] processConfig={processConfig}")
 
                 processRegistered = self.state.get(processConfig.id) != False
@@ -65,24 +67,31 @@ class ProcessScheduler:
                 slog.debug(f"[{processConfig.id}] scheduledToRun={scheduledToRun}, processConfig.runAtStartup={processConfig.runAtStartup}")
 
                 if (scheduledToRun or (not processRegistered and processConfig.runAtStartup)):
-                    slog.info(f"[{processConfig.id}] Process is scheduled to run NOW: {datetime.fromtimestamp (nowTimestamp)}")
-                    self.state.set( processConfig, nowDatetime, executor.submit(self.run, processConfig, config.processLogDir, nowDatetime) )
+                    slog.info(f"[{processConfig.id}] Process is scheduled to run NOW: {datetime.fromtimestamp(nowTimestamp)}")
+                    self.state.set( processConfig, nowDatetime, executor.submit(self.run, processConfig, config.logs, nowDatetime) )
                 else:
-                    slog.info(f"[{processConfig.id}] Process is scheduled to run on: {datetime.fromtimestamp (nextRunTimestamp)}")
+                    slog.info(f"[{processConfig.id}] Process is scheduled to run on: {datetime.fromtimestamp(nextRunTimestamp)}")
 
-    def run(self, processConfig, processLogDir, nowDatetime):
-        plog = self.logHandler.createProcessLogger(processConfig, processLogDir, nowDatetime)
-        plog.debug(f"processConfig={processConfig}, processLogDir={processLogDir}, nowDatetime={nowDatetime}")
+    def run(self, processConfig, configLogs, nowDatetime):
+        plog = self.logHandler.createProcessLogger(processConfig, configLogs, nowDatetime)
+        plog.debug(f"processConfig={processConfig}, configLogs={configLogs}, nowDatetime={nowDatetime}")
 
         with Popen(
             processConfig.command,
             stdout=PIPE,
             stderr=STDOUT
         ) as p:
-            for line in iter (p.stdout.readline, b""):
+            for line in iter(p.stdout.readline, b""):
                 plog.info(f"[{processConfig.id}] ... {line.decode(sys.stdout.encoding).rstrip()}")
 
-    def wait(self, loopRefreshSeconds):
-        logging.info(f"Waiting for: {loopRefreshSeconds} seconds")
+    def sleep(self, loopRestartSeconds):
+        logging.info(f"Sleeping for: {loopRestartSeconds} seconds")
 
-        time.sleep(loopRefreshSeconds)
+        time.sleep(loopRestartSeconds)
+
+    def waitAll(self):
+        for processId in self.state.processIdToProcessStateDict:
+            processState = self.state.processIdToProcessStateDict[ processId ]
+            while not processState.future.done():
+                self.sleep(1)
+            
