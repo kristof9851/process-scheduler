@@ -1,5 +1,6 @@
 # Process Boss
-![process-boss](https://github.com/kristof9851/process-boss/actions/workflows/python-app.yml/badge.svg)
+![Python CI Build](https://github.com/kristof9851/process-boss/actions/workflows/python-ci.yml/badge.svg)
+![PyPI Downloads](https://img.shields.io/pypi/dm/process-boss)
 
 ## Overview
 A Cron job scheduler implemented in Python
