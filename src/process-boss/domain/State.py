@@ -1,4 +1,5 @@
 import json
+from .state.Process import Process
 
 class State:
 
@@ -12,7 +13,7 @@ class State:
         return self.processIdToProcessStateDict[ processId ]
 
     def set(self, processConfig, startDatetime, future): 
-        self.processIdToProcessStateDict[ processConfig.id ] = ProcessState(
+        self.processIdToProcessStateDict[ processConfig.id ] = Process(
             processConfig, startDatetime, future
         )
 
@@ -22,22 +23,4 @@ class State:
     def toDict(self):
         return {
             'State': {p : self.processIdToProcessStateDict[p].toDict() for p in self.processIdToProcessStateDict}
-        }
-
-
-class ProcessState:
-
-    def __init__(self, processConfig, startDatetime, future):
-        self.processConfig = processConfig
-        self.startDatetime = startDatetime
-        self.future = future
-
-    def __str__(self):
-        return json.dumps( self.toDict() )
-
-    def toDict(self):
-        return {
-            'ProcessConfig': self.processConfig.toDict(), 
-            'startDatetime': str(self.startDatetime),
-            'future': str(self.future),
         }

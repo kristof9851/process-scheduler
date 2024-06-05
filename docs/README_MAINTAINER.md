@@ -4,7 +4,7 @@
 
 ## 2. Create virtual env and install project dependencies
 
-Install `venv` to set up your virtual environment
+Install `virtualenv` to set up your virtual environment
 ```bash
 pip install --upgrade virtualenv
 ```
@@ -36,7 +36,7 @@ pip install -e .
 
 ## 3. Run the project
 
-First install from source (see above), then define your configuration in a YAML file
+Define your configuration in a YAML file
 ```yaml
 loopRefreshSeconds: 15
 maxWorkers: 10
@@ -51,7 +51,11 @@ processes:
 
 Run it
 ```bash
+# Windows
 python -m process-boss C:\\Desktop\\config.yaml
+
+# Linux
+python -m process-boss ~/config.yaml
 ```
 
 ## 4. Run the tests
