@@ -1,9 +1,9 @@
 # Process Boss
+![process-boss](https://github.com/kristof9851/process-boss/actions/workflows/python-app.yml/badge.svg)
 
-A python implementation of a cron job scheduler.
+## Overview
+A Cron job scheduler implemented in Python
 
-## 1. User documentation
-See [README_USER.md](docs/README_USER.md)
-
-## 2. Maintainer documentation
-See [README_MAINTAINER.md](docs/README_MAINTAINER.md)
+## Documentation
+- For Users: [README_USER.md](docs/README_USER.md)
+- For Maintainers: [README_MAINTAINER.md](docs/README_MAINTAINER.md)
