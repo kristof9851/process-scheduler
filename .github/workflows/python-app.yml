@@ -37,6 +37,11 @@ jobs:
         source venv/bin/activate
         pip install flake8
         pip install -r requirements.txt
+
+    - name: Install as module
+      run: |
+        source venv/bin/activate
+        pip install -e .
         
     - name: Lint with flake8
       run: |

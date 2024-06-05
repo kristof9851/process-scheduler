@@ -55,8 +55,13 @@ python -m process-boss C:\\Desktop\\config.yaml
 ```
 
 ## 4. Run the tests
+```bash
+# Windows
+.\wtests.bat
 
-TODO
+# Linux
+./tests.sh
+```
 
 ## 5. Build and upload release
 
