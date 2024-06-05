@@ -1,6 +1,8 @@
 import os
 import sys
+import platform
 from subprocess import Popen, PIPE, STDOUT
+import shlex
 
 def getTmpDirPath():
     utilDir = os.path.dirname(__file__)
@@ -19,11 +21,16 @@ def getFixturePath(fileName):
 
 def getPythonVenvLoader():
     utilDir = os.path.dirname(__file__)
-    pythonLoader = os.path.join(utilDir, "python-venv-loader.bat")
+    if platform.system().lower() == 'windows':
+        pythonLoader = os.path.join(utilDir, "python-venv-loader.bat")
+    else:
+        pythonLoader = os.path.join(utilDir, "python-venv-loader.sh")
     return pythonLoader
 
 def getProcessBossExecutable(configParam=""):
-    return f"{getPythonVenvLoader()} -m process-boss {configParam}"
+    cmdString = f"{getPythonVenvLoader()} -m process-boss {configParam}"
+    cmdList = shlex.split(cmdString)
+    return cmdList
 
 def popenProcessBoss(configParam="", cwdParam=None):
     with Popen(getProcessBossExecutable(configParam), stdout=PIPE, stderr=STDOUT, cwd=cwdParam) as p:

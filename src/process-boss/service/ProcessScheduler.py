@@ -2,6 +2,7 @@ import sys
 import time
 import pytz
 import logging
+import shlex
 from subprocess import Popen, PIPE, STDOUT
 from croniter import croniter
 from datetime import datetime
@@ -16,8 +17,8 @@ class ProcessScheduler:
     def __init__(self, configPath):
         logging.info(f"Using configuration file: \"{configPath}\"")
 
-        self.configPath = configPath
         self.startupDatetime = datetime.now(pytz.timezone('Europe/London'))
+        self.configPath = configPath
         self.configHandler = ConfigHandler()
         self.logHandler = LogHandler()
         self.state = State()
@@ -52,7 +53,7 @@ class ProcessScheduler:
                         slog.info(f"[{processConfig.id}] Process is still running. Skipping...")
                         continue
                     else:
-                        nextRunBaseDate = self.state.get(processConfig.id).startDatetime 
+                        nextRunBaseDate = self.state.get(processConfig.id).startDatetime
                         slog.info(f"[{processConfig.id}] Process ran before: {nextRunBaseDate}")
                 else:
                     nextRunBaseDate = self.startupDatetime
@@ -63,12 +64,13 @@ class ProcessScheduler:
                 nextRunTimestamp = croniter(processConfig.cron, nextRunBaseDate).get_next() 
                 nowDatetime = datetime.now(pytz.timezone('Europe/London'))
                 nowTimestamp = nowDatetime.timestamp()
-                scheduledToRun = nextRunTimestamp < nowTimestamp
-                slog.debug(f"[{processConfig.id}] scheduledToRun={scheduledToRun}, processConfig.runAtStartup={processConfig.runAtStartup}")
+                isScheduledToRun = nextRunTimestamp < nowTimestamp
+                slog.debug(f"[{processConfig.id}] isScheduledToRun={isScheduledToRun}, processConfig.runAtStartup={processConfig.runAtStartup}")
 
-                if (scheduledToRun or (not processRegistered and processConfig.runAtStartup)):
+                if (isScheduledToRun or (not processRegistered and processConfig.runAtStartup)):
                     slog.info(f"[{processConfig.id}] Process is scheduled to run NOW: {datetime.fromtimestamp(nowTimestamp)}")
-                    self.state.set( processConfig, nowDatetime, executor.submit(self.run, processConfig, config.logs, nowDatetime) )
+                    future = executor.submit(self.run, processConfig, config.logs, nowDatetime)
+                    self.state.set( processConfig, nowDatetime, future )
                 else:
                     slog.info(f"[{processConfig.id}] Process is scheduled to run on: {datetime.fromtimestamp(nextRunTimestamp)}")
 
@@ -76,13 +78,17 @@ class ProcessScheduler:
         plog = self.logHandler.createProcessLogger(processConfig, configLogs, nowDatetime)
         plog.debug(f"processConfig={processConfig}, configLogs={configLogs}, nowDatetime={nowDatetime}")
 
-        with Popen(
-            processConfig.command,
-            stdout=PIPE,
-            stderr=STDOUT
-        ) as p:
-            for line in iter(p.stdout.readline, b""):
-                plog.info(f"[{processConfig.id}] ... {line.decode(sys.stdout.encoding).rstrip()}")
+        try:
+            with Popen(
+                shlex.split(processConfig.command),
+                stdout=PIPE,
+                stderr=STDOUT
+            ) as p:
+                for line in iter(p.stdout.readline, b""):
+                    plog.info(f"[{processConfig.id}] ... {line.decode(sys.stdout.encoding).rstrip()}")
+                    
+        except Exception as e:
+            plog.error(f"[{processConfig.id}] ... {e}")
 
     def sleep(self, loopRestartSeconds):
         logging.info(f"Sleeping for: {loopRestartSeconds} seconds")
