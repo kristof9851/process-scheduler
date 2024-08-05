@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.5
+
+- PyPi republish with underscore name
+
 ## 0.0.4
 
 - Renamed repo from process-boss to process_boss due to python package manager problems (can't import package with dash in the name)
