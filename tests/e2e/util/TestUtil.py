@@ -19,16 +19,10 @@ def getFixturesDirPath():
 def getFixturePath(fileName):
     return os.path.join(getFixturesDirPath(), fileName)
 
-def getPythonVenvLoader():
-    utilDir = os.path.dirname(__file__)
-    if platform.system().lower() == 'windows':
-        pythonLoader = os.path.join(utilDir, "python-venv-loader.bat")
-    else:
-        pythonLoader = os.path.join(utilDir, "python-venv-loader.sh")
-    return pythonLoader
-
 def getProcessBossExecutable(configParam=""):
-    cmdString = f"{getPythonVenvLoader()} -m process-boss {configParam}"
+    cmdString = "python -m process_boss"
+    if len(configParam) > 0:
+        cmdString = f"{cmdString} {repr(configParam)}"
     cmdList = shlex.split(cmdString)
     return cmdList
 

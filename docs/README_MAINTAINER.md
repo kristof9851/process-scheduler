@@ -40,8 +40,8 @@ Define your configuration in a YAML file
 ```yaml
 loopRefreshSeconds: 15
 maxWorkers: 10
-schedulerLogDir: "C:\\Desktop\\apps\\process-boss\\logs\\scheduler"
-processLogDir: "C:\\Desktop\\apps\\process-boss\\logs\\process"
+schedulerLogDir: "C:\\Desktop\\apps\\process_boss\\logs\\scheduler"
+processLogDir: "C:\\Desktop\\apps\\process_boss\\logs\\process"
 processes:
   - id: test-job
     cron: "0 7 * * mon"                          # == 7:00 AM every Monday
@@ -52,13 +52,19 @@ processes:
 Run it
 ```bash
 # Windows
-python -m process-boss C:\\Desktop\\config.yaml
+python -m process_boss C:\\Desktop\\config.yaml
 
 # Linux
-python -m process-boss ~/config.yaml
+python -m process_boss ~/config.yaml
 ```
 
 ## 4. Run the tests
+
+### Prerequisites
+Steps 1. and 2. above
+
+### How to run
+
 ```bash
 # Windows
 .\wtests.bat

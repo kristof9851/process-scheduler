@@ -16,7 +16,7 @@ class Process:
             type(config['id']) is not str or 
             len(config['id']) == 0
         ):
-            errorMessage = f"Invalid configuration for \"id\": Non-empty string required: \"{config['id']}\""
+            errorMessage = f'Invalid configuration for "id": Non-empty string required: "{config}"'
             logging.error(errorMessage)
             raise Exception(errorMessage)
         
@@ -28,7 +28,7 @@ class Process:
             type(config['cron']) is not str or 
             len(config['cron']) == 0
         ):
-            errorMessage = f"Invalid configuration for \"cron\": Non-empty string required: \"{config['cron']}\""
+            errorMessage = f'Invalid configuration for "cron": Non-empty string required: "{config}"'
             logging.error(errorMessage)
             raise Exception(errorMessage)
         
@@ -40,7 +40,7 @@ class Process:
             type(config['command']) is not str or 
             len(config['command']) == 0
         ):
-            errorMessage = f"Invalid configuration for \"command\": Non-empty string required: \"{config['command']}\""
+            errorMessage = f'Invalid configuration for "command": Non-empty string required: "{config}"'
             logging.error(errorMessage)
             raise Exception(errorMessage)
         
@@ -55,7 +55,7 @@ class Process:
         runAtStartup = config['runAtStartup']
 
         if type(runAtStartup) is not bool:
-            errorMessage = f"Invalid configuration for \"runAtStartup\": Boolean value required: \"{config['runAtStartup']}\""
+            errorMessage = f'Invalid configuration for "runAtStartup": Boolean value required: "{config}"'
             logging.error(errorMessage)
             raise Exception(errorMessage)
         
