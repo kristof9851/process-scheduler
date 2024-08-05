@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "process_boss"
-version = "0.0.3"
+version = "0.0.4"
 description = "A python implementation of a cron job scheduler"
 authors = [ { name="kristof9851" } ]
 readme = "README.md"
@@ -19,5 +19,5 @@ classifiers=[
 requires-python = ">=3.10"
 
 [project.urls]
-Homepage = "https://github.com/kristof9851/process-boss"
-Issues = "https://github.com/kristof9851/process-boss/issues"
+Homepage = "https://github.com/kristof9851/process_boss"
+Issues = "https://github.com/kristof9851/process_boss/issues"

@@ -15,7 +15,7 @@ def verifyArgumentExists():
         logging.error("Missing CLI argument: Configuration File Path")
         logging.error("")
         logging.error("USAGE:")
-        logging.error("    $> python -m process-boss c:\\Users\\kristof\\config.yaml")
+        logging.error("    $> python -m process_boss c:\\Users\\kristof\\config.yaml")
         logging.error("")
         sys.exit(1)
     
