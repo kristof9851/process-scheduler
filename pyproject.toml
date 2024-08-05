@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "process_boss"
-version = "0.0.4"
+version = "0.0.5"
 description = "A python implementation of a cron job scheduler"
 authors = [ { name="kristof9851" } ]
 readme = "README.md"
