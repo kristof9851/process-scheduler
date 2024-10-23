@@ -1,6 +1,10 @@
 # Maintainer documentation
 
+
+
 ## 1. Clone project and install pip/python
+
+
 
 ## 2. Create virtual env and install project dependencies
 
@@ -34,6 +38,8 @@ Install module locally, so you can import it as a module
 pip install -e .
 ```
 
+
+
 ## 3. Run the project
 
 Define your configuration in a YAML file
@@ -63,6 +69,8 @@ python -m process_boss C:\\Desktop\\config.yaml
 python -m process_boss ~/config.yaml
 ```
 
+
+
 ## 4. Run the tests
 
 ### Prerequisites
@@ -78,9 +86,15 @@ Steps 1. and 2. above
 ./tests.sh
 ```
 
+
+
 ## 5. Release
 
-### 5.A Build and upload release manually
+### 5.A. Commit and release automatically
+
+Git add, commit and push to GitHub. The GitHub action will automatically publish the new version to PyPi.
+
+### 5.B. Build and upload release manually
 
 Install dependencies
 
@@ -97,7 +111,3 @@ Ensure `.pypirc` in user folder is correct, then upload
 ```bash
 python -m twine upload dist/*
 ```
-
-### 5.B Commit and release automatically
-
-Git add, commit and push to GitHub. The GitHub action will automatically publish the new version to PyPi.
