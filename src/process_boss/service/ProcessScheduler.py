@@ -78,12 +78,11 @@ class ProcessScheduler:
         plog = self.logHandler.createProcessLogger(processConfig, configLogs, nowDatetime)
         plog.debug(f"processConfig={processConfig}, configLogs={configLogs}, nowDatetime={nowDatetime}")
 
+        command = shlex.split(processConfig.command, posix=False)
+        plog.debug(f"Executing command: {command}")
+
         try:
-            with Popen(
-                shlex.split(processConfig.command),
-                stdout=PIPE,
-                stderr=STDOUT
-            ) as p:
+            with Popen(command, stdout=PIPE, stderr=STDOUT) as p:
                 for line in iter(p.stdout.readline, b""):
                     plog.info(f"[{processConfig.id}] ... {line.decode(sys.stdout.encoding).rstrip()}")
                     

@@ -27,6 +27,24 @@ processes:
     command: "echo 'Hello World!'"
 ```
 
+### Example: Run a script on Monday mornings with logging and for long running tasks
+
+```yaml
+scheduler:
+  maxWorkers: 5
+  loop:
+    restartSeconds: 21600 # 6 hours
+logs:
+  enabled: true
+  schedulerLogdir: "c:\\process_boss\\logs\\scheduler"
+  processLogdir: "c:\\process_boss\\logs\\process"
+processes:
+  - id: test-job
+    cron: "0 7 * * MON" # every Monday at 7:00 AM
+    command: "python c:\\app\\index.py"
+    runAtStartup: true
+```
+
 ## 3. Configuration reference
 
 | Property | Required | Default | Description |

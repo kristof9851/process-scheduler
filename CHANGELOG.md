@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.6
+
+- Fix shlex.split() for process command execution
+
 ## 0.0.5
 
 - PyPi republish with underscore name
